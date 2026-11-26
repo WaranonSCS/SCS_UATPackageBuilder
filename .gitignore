@@ -1,0 +1,15 @@
+# Deny by default. Review and explicitly allow new source files before committing.
+/*
+!/.gitignore
+!/LICENSE
+!/README.md
+!/Builder.csproj
+!/ConnectionProfiles.cs
+!/ConnectionSetup.cs
+!/ProfileTests.cs
+!/Program.cs
+!/Registry.cs
+!/SourceAcquisition.cs
+!/SourceSetup.cs
+!/SourceWorkspace.cs
+!/WorkspaceTests.cs
