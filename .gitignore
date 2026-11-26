@@ -13,3 +13,8 @@
 !/SourceSetup.cs
 !/SourceWorkspace.cs
 !/WorkspaceTests.cs
+!/.github/
+/.github/*
+!/.github/workflows/
+/.github/workflows/*
+!/.github/workflows/windows-ci.yml

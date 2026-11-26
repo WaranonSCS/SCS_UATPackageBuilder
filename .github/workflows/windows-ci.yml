@@ -1,0 +1,43 @@
+name: Windows offline CI
+on:
+  push:
+    branches: [main, 'ci/**']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: windows-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  offline-tests:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+        with:
+          dotnet-version: '10.0.x'
+      - name: Verify toolchain
+        shell: pwsh
+        run: |
+          dotnet --info
+          git --version
+          if (-not (Test-Path "$env:ProgramFiles\Git\cmd\git.exe")) { throw 'Git for Windows missing' }
+      - name: Compile
+        shell: pwsh
+        run: dotnet build Builder.csproj --configuration Release --nologo -warnaserror
+      - name: Baseline tests
+        shell: pwsh
+        run: dotnet run --project Builder.csproj --configuration Release --no-build -- --self-test
+      - name: Multi-tenant profile tests
+        shell: pwsh
+        run: dotnet run --project Builder.csproj --configuration Release --no-build -- --profile-self-test
+      - name: Workspace isolation tests
+        shell: pwsh
+        run: dotnet run --project Builder.csproj --configuration Release --no-build -- --workspace-self-test
